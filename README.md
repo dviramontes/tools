@@ -11,6 +11,7 @@ Simply open any of the `.html` files in your web browser.
 ## Tools
 
 - [Dark Mode PDF Reader](dark-pdf-reader.html) - Read PDFs with inverted colors for easier reading in low light. Drag and drop or open any PDF file.
+- [U.S. Citizenship Test Questions](us-citizenship.html) - Practice for the U.S. Citizenship Naturalization Test with random questions.
 
 ## Contributing
 
