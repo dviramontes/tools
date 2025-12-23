@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dark Mode PDF Reader</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+
+    .toolbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #252525;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid #333;
+      z-index: 100;
+      flex-wrap: wrap;
+    }
+
+    .toolbar button, .toolbar label {
+      background: #3a3a3a;
+      color: #e0e0e0;
+      border: 1px solid #555;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    .toolbar button:hover, .toolbar label:hover {
+      background: #4a4a4a;
+    }
+
+    .toolbar input[type="file"] {
+      display: none;
+    }
+
+    .page-info {
+      color: #aaa;
+      font-size: 14px;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .zoom-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .zoom-controls button {
+      width: 36px;
+      padding: 8px;
+    }
+
+    .invert-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 48px;
+      height: 26px;
+      background: #3a3a3a;
+      border-radius: 13px;
+      cursor: pointer;
+      border: 1px solid #555;
+    }
+
+    .toggle-switch.active {
+      background: #4a7c59;
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      background: #e0e0e0;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .toggle-switch.active::after {
+      transform: translateX(22px);
+    }
+
+    .container {
+      padding-top: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding-bottom: 40px;
+    }
+
+    .drop-zone {
+      width: 80%;
+      max-width: 800px;
+      min-height: 300px;
+      border: 2px dashed #555;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 40px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .drop-zone.drag-over {
+      border-color: #4a7c59;
+      background: rgba(74, 124, 89, 0.1);
+    }
+
+    .drop-zone p {
+      color: #888;
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .drop-zone.hidden {
+      display: none;
+    }
+
+    .pdf-canvas {
+      background: white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      max-width: 95%;
+    }
+
+    .pdf-canvas.inverted {
+      filter: invert(1) hue-rotate(180deg);
+    }
+
+    .loading {
+      color: #888;
+      font-size: 16px;
+      padding: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <label>
+      <input type="file" id="fileInput" accept=".pdf">
+      Open PDF
+    </label>
+    <button id="prevBtn" disabled>← Prev</button>
+    <span class="page-info" id="pageInfo">No PDF loaded</span>
+    <button id="nextBtn" disabled>Next →</button>
+    <div class="zoom-controls">
+      <button id="zoomOut">−</button>
+      <span class="page-info" id="zoomLevel">100%</span>
+      <button id="zoomIn">+</button>
+    </div>
+    <div class="invert-toggle">
+      <span>Dark Mode</span>
+      <div class="toggle-switch active" id="invertToggle"></div>
+    </div>
+  </div>
+
+  <div class="container" id="container">
+    <div class="drop-zone" id="dropZone">
+      <p>Drop a PDF here or click "Open PDF"</p>
+    </div>
+  </div>
+
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    let pdfDoc = null;
+    let currentPage = 1;
+    let scale = 1.0;
+    let isInverted = true;
+
+    const fileInput = document.getElementById('fileInput');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const pageInfo = document.getElementById('pageInfo');
+    const zoomIn = document.getElementById('zoomIn');
+    const zoomOut = document.getElementById('zoomOut');
+    const zoomLevel = document.getElementById('zoomLevel');
+    const invertToggle = document.getElementById('invertToggle');
+    const container = document.getElementById('container');
+    const dropZone = document.getElementById('dropZone');
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file && file.type === 'application/pdf') {
+        loadPDF(file);
+      }
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type === 'application/pdf') {
+        loadPDF(file);
+      }
+    });
+
+    async function loadPDF(file) {
+      dropZone.classList.add('hidden');
+      
+      const existingCanvases = container.querySelectorAll('canvas');
+      existingCanvases.forEach(c => c.remove());
+
+      const loading = document.createElement('div');
+      loading.className = 'loading';
+      loading.textContent = 'Loading PDF...';
+      container.appendChild(loading);
+
+      const arrayBuffer = await file.arrayBuffer();
+      pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      
+      loading.remove();
+      currentPage = 1;
+      updateControls();
+      renderPage(currentPage);
+    }
+
+    async function renderPage(pageNum) {
+      const existingCanvas = container.querySelector('canvas');
+      if (existingCanvas) existingCanvas.remove();
+
+      const page = await pdfDoc.getPage(pageNum);
+      const viewport = page.getViewport({ scale });
+
+      const canvas = document.createElement('canvas');
+      canvas.className = 'pdf-canvas';
+      if (isInverted) canvas.classList.add('inverted');
+      
+      const context = canvas.getContext('2d');
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      await page.render({
+        canvasContext: context,
+        viewport: viewport
+      }).promise;
+
+      container.appendChild(canvas);
+      updateControls();
+    }
+
+    function updateControls() {
+      if (pdfDoc) {
+        pageInfo.textContent = `${currentPage} / ${pdfDoc.numPages}`;
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = currentPage >= pdfDoc.numPages;
+      }
+      zoomLevel.textContent = `${Math.round(scale * 100)}%`;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderPage(currentPage);
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (pdfDoc && currentPage < pdfDoc.numPages) {
+        currentPage++;
+        renderPage(currentPage);
+      }
+    });
+
+    zoomIn.addEventListener('click', () => {
+      scale = Math.min(scale + 0.25, 3);
+      if (pdfDoc) renderPage(currentPage);
+      updateControls();
+    });
+
+    zoomOut.addEventListener('click', () => {
+      scale = Math.max(scale - 0.25, 0.25);
+      if (pdfDoc) renderPage(currentPage);
+      updateControls();
+    });
+
+    invertToggle.addEventListener('click', () => {
+      isInverted = !isInverted;
+      invertToggle.classList.toggle('active', isInverted);
+      const canvas = container.querySelector('canvas');
+      if (canvas) {
+        canvas.classList.toggle('inverted', isInverted);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prevBtn.click();
+      if (e.key === 'ArrowRight') nextBtn.click();
+      if (e.key === '+' || e.key === '=') zoomIn.click();
+      if (e.key === '-') zoomOut.click();
+    });
+  </script>
+</body>
+</html>
