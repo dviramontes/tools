@@ -10,7 +10,7 @@ Simply open any of the `.html` files in your web browser.
 
 ## Tools
 
-*List of tools will appear here.*
+- [PDF Dark Reader](pdf-dark-reader.html) - Invert colors of PDFs for comfortable reading in dark environments.
 
 ## Contributing
 
