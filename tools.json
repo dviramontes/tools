@@ -7,10 +7,16 @@
       "url": "https://dviramontes.github.io/tools/dark-pdf-reader.html"
     },
     {
-      "name": "U.S. Citizenship Test Questions",
-      "slug": "us-citizenship-test",
-      "description": "Practice for the U.S. Citizenship Naturalization Test with random questions.",
-      "url": "https://dviramontes.github.io/tools/us-citizenship.html"
+      "name": "U.S. Citizenship Test (2008)",
+      "slug": "citizenship-quiz-2008",
+      "description": "Practice for the U.S. Citizenship Naturalization Test (2008 Version, 100 Questions).",
+      "url": "https://dviramontes.github.io/tools/citizenship-quiz-2008.html"
+    },
+    {
+      "name": "U.S. Citizenship Test (2025)",
+      "slug": "citizenship-quiz-2025",
+      "description": "Practice for the U.S. Citizenship Naturalization Test (2025 Version, 128 Questions).",
+      "url": "https://dviramontes.github.io/tools/citizenship-quiz-2025.html"
     }
   ]
 }
