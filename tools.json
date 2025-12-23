@@ -1,0 +1,10 @@
+{
+  "tools": [
+    {
+      "name": "Dark Mode PDF Reader",
+      "slug": "dark-pdf-reader",
+      "description": "Read PDFs with inverted colors for easier reading in low light. Drag and drop or open any PDF file.",
+      "url": "https://dviramontes.github.io/tools/dark-pdf-reader.html"
+    }
+  ]
+}

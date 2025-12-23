@@ -10,7 +10,7 @@ Simply open any of the `.html` files in your web browser.
 
 ## Tools
 
-- [PDF Dark Reader](pdf-dark-reader.html) - Invert colors of PDFs for comfortable reading in dark environments.
+- [Dark Mode PDF Reader](dark-pdf-reader.html) - Read PDFs with inverted colors for easier reading in low light. Drag and drop or open any PDF file.
 
 ## Contributing
 
