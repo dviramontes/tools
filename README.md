@@ -11,7 +11,8 @@ Simply open any of the `.html` files in your web browser.
 ## Tools
 
 - [Dark Mode PDF Reader](dark-pdf-reader.html) - Read PDFs with inverted colors for easier reading in low light. Drag and drop or open any PDF file.
-- [U.S. Citizenship Test Questions](us-citizenship.html) - Practice for the U.S. Citizenship Naturalization Test with random questions.
+- [U.S. Citizenship Test (2025)](citizenship-quiz-2025.html) - Practice for the U.S. Citizenship Naturalization Test (2025 Version, 128 Questions).
+- [U.S. Citizenship Test (2008)](citizenship-quiz-2008.html) - Practice for the U.S. Citizenship Naturalization Test (2008 Version, 100 Questions).
 
 ## Contributing
 
