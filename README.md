@@ -8,7 +8,6 @@ These are simple, single-file tools that run entirely in the browser.
 
 Simply open any of the `.html` files in your web browser.
 
-## Tools
 
 - [Dark Mode PDF Reader](dark-pdf-reader.html) - Read PDFs with inverted colors for easier reading in low light. Drag and drop or open any PDF file.
 - [U.S. Citizenship Test (2025)](citizenship-quiz-2025.html) - Practice for the U.S. Citizenship Naturalization Test (2025 Version, 128 Questions). *Note: This is not an official resource and may contain mistakes. Please refer to [USCIS.gov](https://www.uscis.gov) for the official resource.*
