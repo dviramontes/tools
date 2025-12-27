@@ -11,6 +11,12 @@
       "slug": "citizenship-quiz-2025",
       "description": "Practice for the U.S. Citizenship Naturalization Test. Includes both 2008 (100 Questions) and 2025 (128 Questions) versions. Note: This is not an official resource and may contain mistakes. Please refer to USCIS.gov for the official resource.",
       "url": "https://dviramontes.github.io/tools/citizenship-quiz-2025.html"
+    },
+    {
+      "name": "Textarea",
+      "slug": "textarea",
+      "description": "A minimalist text editor that lives entirely in your browser and stores everything in the URL hash. Originally by @antonmedv. Write-up via https://simonwillison.net/2025/Dec/27/textarea-my/.",
+      "url": "https://dviramontes.github.io/tools/textarea/"
     }
   ]
 }
