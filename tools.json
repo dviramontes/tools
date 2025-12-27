@@ -15,7 +15,7 @@
     {
       "name": "Textarea",
       "slug": "textarea",
-      "description": "A minimalist text editor that lives entirely in your browser and stores everything in the URL hash. Originally by @antonmedv. Write-up via https://simonwillison.net/2025/Dec/27/textarea-my/.",
+      "description": "A minimalist text editor that lives entirely in your browser and stores everything in the URL hash. Originally by @antonmedv. Write-up via https://simonwillison.net/2025/Dec/27/textarea-my/. This one works best if you visit it directly at https://dviramontes.github.io/tools/textarea/.",
       "url": "https://dviramontes.github.io/tools/textarea/"
     }
   ]
